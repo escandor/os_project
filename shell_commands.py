@@ -1,3 +1,6 @@
+# Student name: Alexandra Escandor
+# ID: 17418156
+
 from cmd import Cmd
 from subprocess import *
 import os
@@ -102,8 +105,21 @@ class MyShell(Cmd):
 		else:
 			print(output)
 
-	# def do_help(self, arg):
-	# 	pass
+	def do_help(self, args):
+		with open("readme", "r") as f:
+			tokens = [line for line in f.readlines() if line != "\n"]
+
+		if len(args) > 0:
+			for line in tokens:
+				if args == line.split()[0]:
+					print(line.strip())
+		else:
+			i = 0
+			while i < len(tokens):
+				if i % 20 == 0 and i != 0:
+					input("Press ENTER for more")
+				print(tokens[i].strip() + "\n")
+				i += 1
 
 	def do_pause(self, args):
 		if len(args) > 0:
