@@ -15,13 +15,16 @@ class MyShell(Cmd):
 		# if pid > 0:
 		# 	wpid = os.waitpid(pid, 0)
 		# else:
-		args = args.split()
-		if args[-1] == "&":
-			Thread(target=self.multiprocess, args=(args[:-1],)).start()
-		elif ">" in args or ">>" in args:
-			self.io_redir2(args)
-		else:
-			call(args)
+		try:
+			args = args.split()
+			if args[-1] == "&":
+				Thread(target=self.multiprocess, args=(args[:-1],)).start()
+			elif ">" in args or ">>" in args:
+				self.io_redir2(args)
+			else:
+				call(args)
+		except:
+			print("Please enter a valid command")
 
 	def multiprocess(self, args):
 		call(args)
@@ -61,6 +64,8 @@ class MyShell(Cmd):
 				os.environ["PWD"] = os.getcwd()
 			except FileNotFoundError:
 				print("File or directory \"{}\" does not exist".format(args))
+		else:
+			print("Current directory:", os.getcwd())
 		self.myprompt()
 
 	def do_clr(self, args):
@@ -70,33 +75,31 @@ class MyShell(Cmd):
 			os.system("clear")
 
 	def do_dir(self, args):
-		output = ""
 		try:
 			directory = os.listdir()
 			if len(args) > 0 and args[0] != ">":
 				directory = os.listdir(args.split()[0])
+
+			output = ""
 			for file in directory:
 				if file[0] != ".":
 					if os.path.isdir(file):
 						output += self.color_blue("(d) " + file + "\n")
 					else:
 						output += "(f) " + file + "\n"
+			self.io_redir(output.strip(), args)
+
 		except FileNotFoundError as e:
 			print("No such directory: " + "".join(args))
 
-		self.io_redir(output.strip(), args)
-
 	def do_environ(self, args):
-		output = ""
-		if len(args) > 0 and ">" not in args.split():
-			print("Incorrect use of command")
-			return
-		else:
+		if len(args) == 0 or ">" == args[0]:
+			output = ""
 			for k, v in os.environ.items():
-				output += self.color_red("\033[01m" + k + "=\033[0m" + "\n")
-				output += v + "\n"
-
-		self.io_redir(output.strip(), args)
+				output += self.color_red(k + ": \n") + v + "\n\n"
+			self.io_redir(output.strip(), args)
+		else:
+			print("Incorrect use of command")
 
 	def do_echo(self, args):
 		output = " ".join(args.split())
@@ -107,19 +110,16 @@ class MyShell(Cmd):
 
 	def do_help(self, args):
 		with open("readme", "r") as f:
-			tokens = [line for line in f.readlines() if line != "\n"]
+			lines = [line for line in f.readlines()]
 
-		if len(args) > 0:
-			for line in tokens:
-				if args == line.split()[0]:
-					print(line.strip())
-		else:
-			i = 0
-			while i < len(tokens):
-				if i % 20 == 0 and i != 0:
-					input("Press ENTER for more")
-				print(tokens[i].strip() + "\n")
-				i += 1
+		for idx, line in enumerate(lines):
+			if len(args) > 0:
+				if line != "\n" and args == line.split()[0]:
+			 		print(line.strip())
+			else:
+				if idx % 20 == 0 and idx != 0:
+					input("Press ENTER for more...")
+				print(line.strip())
 
 	def do_pause(self, args):
 		if len(args) > 0:
@@ -134,17 +134,17 @@ class MyShell(Cmd):
 			print("Bye!\n")
 			raise SystemExit
 
-	def do_EOF(self, args):
+	def do_EOF(self):
 		return True
+
+	def emptyline(self):
+		self.myprompt()
 
 	def myprompt(self):
 		self.prompt = self.color_purple(os.getcwd()) + "~$ "
 
 	def color_blue(self, word):
 		return "\033[34;01m" + word + "\033[0m"
-
-	def color_yellow(self, word):
-		return "\033[93;01m" + word + "\033[0m"
 
 	def color_red(self, word):
 		return "\033[31;01m" + word + "\033[0m"
