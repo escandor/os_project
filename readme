@@ -1,6 +1,3 @@
-Student name: Alexandra Escandor
-ID: 17418156
-
 ========= Description =========
 
 MyShell is a command language interpreter written in Python 3 which incorperates output redirection, background execution and batchfile execution. It is used as a shell script command processor.
