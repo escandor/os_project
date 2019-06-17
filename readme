@@ -1,0 +1,54 @@
+Student name: Alexandra Escandor
+ID: 17418156
+
+========= Description =========
+
+MyShell is a command language interpreter written in Python 3 which incorperates output redirection, background execution and batchfile execution. It is used as a shell script command processor.
+
+========= How it Works =========
+
+MyShell is run by typing 'python3 myshell.py' into the terminal. The shell command prompt appears which contains the current directory. It will then begin reading in commands from the user.
+
+========= Built-in Commands =========
+
+These commands are executable within the shell.
+
+	cd {directory} - Changes current directory to {directory}. Reports current directory if there is no argument.
+
+	clr - Clears the screen.
+
+	dir {directory} - Displays contents of {directory}. Displays contents of current directory if there is no argument.
+
+	echo {comment} - Displays {comment} followed by a new line. All white space is also reduced to a single space.
+
+	environ - Displays all the environment strings.
+
+	pause - Pauses execution of shell until Enter is pressed.
+
+	quit - Exits the shell.
+
+========= Non-built-in Command Execution =========
+
+If a command is typed into the shell but is not a built-in command, the shell will interpret it as program invocation. The program will run as a child process of the shell and as if the command was typed into the terminal.
+
+========= Output Redirection =========
+
+MyShell allows for output redirection, i.e. writing output into a file, by adding the followed at the end of the command:
+
+	> {filename} - Writes output of the command into {filename}. If {filename} exists, it will be overwritten. If not, {filename} will be created and its contents will be the output.
+
+	>> {filename} - Writes output of the command into {filename}. If {filename} exists, the output will be appended to the end of the file. If not, {filename} will be created and its contents will be the output.
+
+Output redirection will not work with commands that do not take in an argument. These are: clr, pause and quit.
+
+========= Background Execution =========
+
+MyShell supports the background execution of programs by adding the following to the end of the command:
+
+	& - Allows the program to remain executing in the background until it is done. The shell returns to the command prompt immediately. Other commands can still run in the shell while the program is executing.
+
+========= Batchfile Execution =========
+
+	python3 myshell.py {batchfile}
+
+MyShell can be executed with a file as an argument. The file will contain a series of commands that would normally be typed into the shell. Once the end of the file is reached, it will exit the shell.
